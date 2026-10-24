@@ -20,6 +20,11 @@ def main():
 
         meanings = []
         pos_tags = set()
+        priority_codes = []
+
+        for priority in entry.findall(".//ke_pri") + entry.findall(".//re_pri"):
+            if priority.text and priority.text not in priority_codes:
+                priority_codes.append(priority.text)
 
         for sense in entry.findall("sense"):
             # English glosses
@@ -42,7 +47,8 @@ def main():
             "readings": reading_list,
             "meanings": meanings,
             "pos": sorted(pos_tags),
-            "tags": []
+            "tags": [],
+            "priority": priority_codes,
         })
 
     print(f"Parsed {len(entries)} entries")
