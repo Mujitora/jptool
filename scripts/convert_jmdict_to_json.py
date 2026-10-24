@@ -1,9 +1,11 @@
 # convert_jmdict_to_json.py
-import xml.etree.ElementTree as ET
 import json
+import xml.etree.ElementTree as ET
+from pathlib import Path
 
-INPUT_XML = "data/JMdict.xml"      # local name
-OUTPUT_JSON = "data/jmdict.json"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+INPUT_XML = PROJECT_ROOT / "data" / "JMdict.xml"
+OUTPUT_JSON = PROJECT_ROOT / "data" / "jmdict.json"
 
 def main():
     tree = ET.parse(INPUT_XML)

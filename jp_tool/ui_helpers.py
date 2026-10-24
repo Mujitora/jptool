@@ -5,7 +5,7 @@ import ctypes
 import pyperclip
 import keyboard
 
-from dictionary_loader import DictionaryEntry
+from .dictionary_loader import DictionaryEntry
 
 
 VK_CAPITAL = 0x14  # virtual key code for CapsLock

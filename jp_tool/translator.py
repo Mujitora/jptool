@@ -1,6 +1,6 @@
 # translator.py
-from dictionary_loader import Dictionary, DictionaryEntry
-from language_detect import detect_language
+from .dictionary_loader import Dictionary, DictionaryEntry
+from .language_detect import detect_language
 
 
 class TranslationResult:

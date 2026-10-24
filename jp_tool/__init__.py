@@ -1,0 +1,1 @@
+"""Core modules for the JPTool desktop application."""
