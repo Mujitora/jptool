@@ -2,3 +2,5 @@ keyboard
 pyperclip
 fugashi
 unidic-lite
+manga-ocr
+Pillow

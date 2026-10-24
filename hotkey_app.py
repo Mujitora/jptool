@@ -9,6 +9,7 @@ from dictionary_loader import Dictionary
 from translator import Translator
 from main import print_results
 from ui_helpers import format_result_for_popup, PopupWindow, get_cursor_position, ensure_caps_off
+from screen_snip_ocr import ScreenSnipOCR
 
 import sys, os #for exe export
 def resource_path(relative_path: str):
@@ -78,6 +79,7 @@ def main():
     popup = PopupWindow()
     on_hotkey = create_hotkey_handler(translator, popup)
     ui_actions = queue.SimpleQueue()
+    snip_ocr = ScreenSnipOCR()
 
     def log_tk_exception(exception, value, tb):
         logging.error(
@@ -97,6 +99,45 @@ def main():
                 logging.exception("Queued UI action failed")
                 print("A hotkey action failed; details were written to the JPTool log.")
 
+    def handle_ocr_text(recognized_text):
+        print(f"\nRecognized Japanese: {recognized_text or '(no text recognized)'}")
+        logging.info("OCR completed; recognized %d characters", len(recognized_text))
+        result = translator.translate_word(recognized_text)
+        print_results(result)
+        print("=======================\n")
+
+        popup_text = format_result_for_popup(result)
+        x, y = get_cursor_position()
+        ui_actions.put(lambda: popup.show(popup_text, x, y))
+
+    def handle_ocr_error(error):
+        logging.error("OCR workflow failed", exc_info=(type(error), error, error.__traceback__))
+        print("OCR failed; details were written to the JPTool log.")
+
+    def report_ocr_status(status):
+        logging.info("OCR status: %s", status)
+        print(status)
+
+    def start_ocr():
+        logging.info("Starting screen-snipping OCR workflow")
+        started = snip_ocr.start(
+            on_text=handle_ocr_text,
+            on_error=handle_ocr_error,
+            on_status=report_ocr_status,
+        )
+        if not started:
+            print("OCR is still working or waiting for a snip. Press Esc to cancel it.")
+
+    def request_ocr():
+        logging.info("Ctrl+Alt+O hotkey received")
+        print("Ctrl+Alt+O received; preparing screen snip...")
+        ui_actions.put(start_ocr)
+
+    snip_ocr.warm_up(
+        on_status=report_ocr_status,
+        on_error=handle_ocr_error,
+    )
+
     print("JP↔EN hotkey translator running.")
     print("Highlight text, press CapsLock to translate.")
     print("Press Alt+Shift+Q to quit.\n")
@@ -105,6 +146,8 @@ def main():
 
     # Keyboard callbacks run on a listener thread; keep Tk operations on its main thread.
     keyboard.add_hotkey("caps lock", lambda: ui_actions.put(on_hotkey), suppress=False)
+    keyboard.add_hotkey("ctrl+alt+o", request_ocr)
+    print("Press Ctrl+Alt+O to snip Japanese text and translate it.")
 
     def request_quit():
         logging.warning("Alt+Shift+Q received; requesting shutdown")

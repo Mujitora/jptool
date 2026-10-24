@@ -93,24 +93,35 @@ class Dictionary:
         if results:
             return results[:max_results]
 
-        # Resolve conjugated verbs and adjectives to their dictionary forms.
+        # Find dictionary words in a sentence and resolve conjugated forms.
         for token in self._japanese_tagger(term):
             features = token.feature._asdict()
             part_of_speech = features.get("pos1")
+            part_of_speech_detail = features.get("pos2")
             lemma = features.get("lemma")
             conjugation_form = features.get("cForm", "")
             inflected_forms = ("連用形", "未然形", "仮定形", "命令形", "連体形")
+            is_inflected = conjugation_form.startswith(inflected_forms)
             if (
-                part_of_speech not in {"動詞", "形容詞"}
-                or not lemma
-                or lemma == token.surface
-                or not conjugation_form.startswith(inflected_forms)
+                part_of_speech not in {"名詞", "動詞", "形容詞", "形状詞", "副詞"}
+                or (part_of_speech_detail == "非自立可能" and not is_inflected)
             ):
                 continue
 
-            for entry in self.by_kanji.get(lemma, []) + self.by_reading.get(lemma, []):
-                if entry not in results:
-                    results.append(entry)
+            lookup_forms = [token.surface]
+            if (
+                part_of_speech in {"動詞", "形容詞"}
+                and lemma
+                and lemma != token.surface
+                and is_inflected
+            ):
+                lookup_forms.insert(0, lemma)
+
+            for lookup_form in lookup_forms:
+                matches = self.by_kanji.get(lookup_form, []) + self.by_reading.get(lookup_form, [])
+                for entry in matches:
+                    if entry not in results:
+                        results.append(entry)
 
         return results[:max_results]
 
