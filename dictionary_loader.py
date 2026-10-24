@@ -1,5 +1,6 @@
 # dictionary_loader.py
 import json
+import fugashi
 
 
 class DictionaryEntry:
@@ -29,6 +30,7 @@ class Dictionary:
         self.by_kanji = {}
         self.by_reading = {}
         self.by_english = {}
+        self._japanese_tagger = fugashi.Tagger()
 
         try:
             with open(json_path, "r", encoding="utf-8") as f:
@@ -88,7 +90,28 @@ class Dictionary:
                 if e not in results:
                     results.append(e)
 
-        # Just return the first few to avoid spamming
+        if results:
+            return results[:max_results]
+
+        # Resolve conjugated verbs and adjectives to their dictionary forms.
+        for token in self._japanese_tagger(term):
+            features = token.feature._asdict()
+            part_of_speech = features.get("pos1")
+            lemma = features.get("lemma")
+            conjugation_form = features.get("cForm", "")
+            inflected_forms = ("連用形", "未然形", "仮定形", "命令形", "連体形")
+            if (
+                part_of_speech not in {"動詞", "形容詞"}
+                or not lemma
+                or lemma == token.surface
+                or not conjugation_form.startswith(inflected_forms)
+            ):
+                continue
+
+            for entry in self.by_kanji.get(lemma, []) + self.by_reading.get(lemma, []):
+                if entry not in results:
+                    results.append(entry)
+
         return results[:max_results]
 
 
