@@ -1,4 +1,5 @@
 import time
+import queue
 import keyboard
 import pyperclip
 import ctypes
@@ -65,15 +66,23 @@ def main():
 
     popup = PopupWindow()
     on_hotkey = create_hotkey_handler(translator, popup)
+    ui_actions = queue.SimpleQueue()
+
+    def process_ui_actions():
+        while not ui_actions.empty():
+            ui_actions.get()()
+        popup.root.after(25, process_ui_actions)
 
     print("JP↔EN hotkey translator running.")
     print("Highlight text, press CapsLock to translate.")
     print("Press Alt+Shift+Q to quit.\n")
 
-    # Let CapsLock go through to the OS (so it still toggles), we clean it up in hide()
-    keyboard.add_hotkey("caps lock", on_hotkey, suppress=False)
+    popup.root.after(25, process_ui_actions)
 
-    keyboard.add_hotkey("alt+shift+q", lambda: popup.root.destroy())
+    # Keyboard callbacks run on a listener thread; keep Tk operations on its main thread.
+    keyboard.add_hotkey("caps lock", lambda: ui_actions.put(on_hotkey), suppress=False)
+
+    keyboard.add_hotkey("alt+shift+q", lambda: ui_actions.put(popup.root.destroy))
     popup.run()
 
 
