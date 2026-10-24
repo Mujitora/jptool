@@ -1,0 +1,37 @@
+[
+  {
+    "kanji": "犬",
+    "reading": "いぬ",
+    "meanings": ["dog"],
+    "pos": ["noun"],
+    "tags": []
+  },
+  {
+    "kanji": "公園",
+    "reading": "こうえん",
+    "meanings": ["park"],
+    "pos": ["noun"],
+    "tags": []
+  },
+  {
+    "kanji": null,
+    "reading": "ありがとう",
+    "meanings": ["thank you"],
+    "pos": ["expression"],
+    "tags": []
+  },
+  {
+    "kanji": "猫",
+    "reading": "ねこ",
+    "meanings": ["cat"],
+    "pos": ["noun"],
+    "tags": []
+  },
+  {
+    "kanji": null,
+    "reading": "ドッグ",
+    "meanings": ["dog (loanword)"],
+    "pos": ["noun"],
+    "tags": ["katakana"]
+  }
+]
