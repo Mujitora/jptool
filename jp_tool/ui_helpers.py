@@ -2,7 +2,6 @@
 
 import tkinter as tk
 import ctypes
-import pyperclip
 import keyboard
 
 from .dictionary_loader import DictionaryEntry
@@ -81,29 +80,34 @@ class PopupWindow:
         self.root.attributes("-topmost", True)
         self.root.withdraw()  # start hidden
 
-        self.text_var = tk.StringVar()
-        label = tk.Label(
+        self.text_widget = tk.Text(
             self.root,
-            textvariable=self.text_var,
-            justify="left",
-            anchor="w",
+            width=52,
+            height=1,
+            wrap="word",
+            borderwidth=0,
+            highlightthickness=0,
             font=("Segoe UI", 10),
+            state="disabled",
         )
-        label.pack(padx=8, pady=8)
+        self.text_widget.pack(padx=8, pady=8)
 
         # Hide on Esc or click anywhere in the window
         # Hide on ESC
         self.root.bind("<Escape>", lambda e: self.hide())
-
-        # Hide when clicking outside the popup
-        self.root.bind("<FocusOut>", lambda e: self.hide())
 
         # Bind a global click detection
         self.root.bind_all("<Button-1>", self._on_global_click)
 
 
     def show(self, text: str, x: int | None = None, y: int | None = None):
-        self.text_var.set(text)
+        self.text_widget.configure(state="normal")
+        self.text_widget.delete("1.0", tk.END)
+        self.text_widget.insert("1.0", text)
+        self.text_widget.configure(
+            state="disabled",
+            height=max(1, min(text.count("\n") + 1, 18)),
+        )
         self.root.update_idletasks()
 
         if x is not None and y is not None:
@@ -117,12 +121,6 @@ class PopupWindow:
 
     def hide(self):
         self.root.withdraw()
-
-        # Clear clipboard so stale text doesn't get reused
-        try:
-            pyperclip.copy("")
-        except pyperclip.PyperclipException:
-            pass
 
         # Only runs when a popup actually existed → safe place to "clean up" CapsLock
         ensure_caps_off()
