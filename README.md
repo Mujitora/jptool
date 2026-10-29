@@ -2,7 +2,7 @@
 
 A Japanese-English desktop dictionary for Windows. Select text and press **Caps Lock** to translate it in a popup. Press **Ctrl+Alt+O** to snip Japanese text and translate it with OCR.
 
-<img width="1293" height="1150" alt="jptool" src="https://github.com/user-attachments/assets/546a2137-9fd0-4160-b731-006750c241d5" />
+<img width="1293" height="1150" alt="jptool" width="500" src="https://github.com/user-attachments/assets/546a2137-9fd0-4160-b731-006750c241d5" />
 
 ## Download and run
 
