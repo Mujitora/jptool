@@ -2,6 +2,8 @@
 
 A Japanese-English desktop dictionary for Windows. Select text and press **Caps Lock** to translate it in a popup. Press **Ctrl+Alt+O** to snip Japanese text and translate it with OCR.
 
+<img width="1293" height="1150" alt="jptool" src="https://github.com/user-attachments/assets/546a2137-9fd0-4160-b731-006750c241d5" />
+
 ## Download and run
 
 1. Open the [GitHub Releases](https://github.com/Mujitora/jptool/releases) page and download `JPTool-windows-x64.zip` from the latest release.
