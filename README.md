@@ -2,7 +2,16 @@
 
 # JPTool
 
-A Japanese-English desktop dictionary for Windows. Select text and press **Caps Lock** to translate it in a popup. Press **Ctrl+Alt+O** to snip Japanese text and translate it with OCR.
+
+JPTool is a lightweight Japanese-English desktop dictionary for Windows that makes looking up Japanese words quick and seamless, without interrupting what you're doing.
+
+Simply **highlight any Japanese text and press Caps Lock** to instantly display its English definition in a convenient popup window.
+
+For text that can't be selected, such as in video games, manga, or images, JPTool includes a built-in OCR tool. Press **Ctrl+Alt+O** to select an area of your screen, automatically recognize the Japanese text, and look up its meaning.
+
+JPTool also features **Anki integration**, allowing you to easily create flashcards from words you encounter. Quickly add new vocabulary to your Anki decks as you read or play, making it easier to review and retain what you've learned.
+
+Designed for Japanese learners, JPTool brings the convenience of browser-based dictionary extensions to your entire desktop, combining instant dictionary lookups, screen-based text recognition, and vocabulary flashcard creation into one convenient tool.
 
 <img width="647" height="575" alt="jptool" src="https://github.com/user-attachments/assets/546a2137-9fd0-4160-b731-006750c241d5" />
 
